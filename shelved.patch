@@ -1,0 +1,111 @@
+Index: src/com/company/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.company;\r\n\r\nimport java.beans.XMLEncoder;\r\nimport java.io.File;\r\nimport java.io.FileNotFoundException;\r\nimport java.io.FileOutputStream;\r\nimport java.io.IOException;\r\nimport java.util.*;\r\n\r\npublic class Main {\r\n\r\n    public static void main(String[] args) throws FileNotFoundException {\r\n        ArrayList<String> arrayList = new ArrayList<String>();\r\n        arrayList.add(\"One\");\r\n        arrayList.add(\"Two\");\r\n        arrayList.add(\"Three\");\r\n        arrayList.add(\"One\");\r\n\r\n        Scanner scanner = new Scanner(System.in);\r\n        int choice = 0;\r\n        System.out.println(\"Меню:\");\r\n        System.out.println(\"1. Добавление объекта\");\r\n        System.out.println(\"2. Удаление объекта\");\r\n        System.out.println(\"3. Поиск одинаковых элементов с подсчётом совпадений\");\r\n        System.out.println(\"4. Выгрузка в xml-файл\");\r\n        System.out.println(\"5. Реверс всех строк, входящих в коллекцию\");\r\n        System.out.println(\"6. Статистика по всем символам, содержащимся в строках коллекции\");\r\n        System.out.println(\"7. Поиск подстроки в строках коллекции\");\r\n        System.out.println(\"8. Инициализация листа по текстовому файлу и вывод содержимого коллекции на экран\");\r\n        System.out.println(\"9. Посчитать длины строк, входящих в коллекцию, и вывести на экран\");\r\n        System.out.println(\"10. Завершить\");\r\n\r\n        while (true) {\r\n            System.out.println(\"Выберите действие: \");\r\n            choice = scanner.nextInt();\r\n            switch (choice) {\r\n                case 1:\r\n                    addObject(arrayList);\r\n                    break;\r\n                case 2:\r\n                    deleteObject(arrayList);\r\n                    break;\r\n                case 3:\r\n                    findEqualObjects(arrayList);\r\n                    break;\r\n                case 4:\r\n                    inXml(arrayList);\r\n                    break;\r\n                case 5:\r\n                    reverse(arrayList);\r\n                    break;\r\n                case 6:\r\n                    statistics(arrayList);\r\n                    break;\r\n                case 7:\r\n                    findSubstring(arrayList);\r\n                    break;\r\n                case 8:\r\n                    textFile(arrayList);\r\n                    break;\r\n                case 9:\r\n                    stringLength(arrayList);\r\n                    break;\r\n                default:\r\n                    return;\r\n            }\r\n\r\n        }\r\n    }\r\n\r\n    public static void addObject(ArrayList<String> arrayList) {\r\n        System.out.println(\"Введите строку для добавления: \");\r\n        Scanner in = new Scanner(System.in);\r\n        arrayList.add(in.nextLine());\r\n        System.out.println(arrayList);\r\n    }\r\n\r\n    public static void deleteObject(ArrayList<String> arrayList) {\r\n        System.out.println(\"Введите номер элемента для удаления: \");\r\n        Scanner in = new Scanner(System.in);\r\n        arrayList.remove(in.nextInt() - 1);\r\n        System.out.println(arrayList);\r\n    }\r\n\r\n    public static void inXml(ArrayList<String> arrayList) {\r\n        ForXml object = new ForXml(arrayList.get(0), arrayList.get(1), arrayList.get(2), arrayList.get(3), arrayList.get(4));\r\n        try {\r\n            FileOutputStream fileOutputStream = new FileOutputStream(new File(\"./arrayList.xml\"));\r\n            XMLEncoder encoder = new XMLEncoder(fileOutputStream);\r\n            encoder.writeObject(object);\r\n            encoder.close();\r\n            fileOutputStream.close();\r\n            System.out.println(\"Succeed\");\r\n        } catch (IOException e) {\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n    public static void findEqualObjects(ArrayList<String> arrayList) {\r\n        int i = 1;\r\n        int numberOfEqualElements = 0;\r\n        for (String string : arrayList) {\r\n            for (int j = i; j < arrayList.size(); ++j) {\r\n                String st = arrayList.get(j);\r\n                if (string.equals(st)) {\r\n                    numberOfEqualElements++;\r\n                }\r\n            }\r\n            i++;\r\n        }\r\n        System.out.println(arrayList);\r\n        System.out.println(\"Количество повторяющихся элементов: \" + numberOfEqualElements);\r\n    }\r\n\r\n    public static void reverse(ArrayList<String> arrayList) {\r\n        Collections.reverse(arrayList);\r\n        System.out.println(arrayList);\r\n    }\r\n\r\n    public static void statistics(ArrayList<String> arrayList) {\r\n        String arrayListString = arrayList.toString();\r\n        Map<Character, Integer> map = new TreeMap<>();\r\n        for (char c : arrayListString.toCharArray()) {\r\n            map.put(c, (map.containsKey(c))?map.get(c) + 1 : 1);\r\n        }\r\n\r\n        StringBuilder stringBuilder = new StringBuilder();\r\n        for (char c: map.keySet()) {\r\n            stringBuilder.append(c);\r\n        }\r\n\r\n        System.out.println(\"Имеются символы \\\"\"+stringBuilder.toString()+\"\\\"\");\r\n        for (char c:map.keySet()) {\r\n            System.out.println(\"Количество \\'\" + c + \"\\'= \" + map.get(c));\r\n        }\r\n    }\r\n\r\n    public static void findSubstring(ArrayList<String> arrayList) {\r\n        System.out.println(\"Введите подстроку для поиска: \");\r\n        Scanner in = new Scanner(System.in);\r\n        String substring = in.nextLine();\r\n\r\n        for (String string : arrayList) {\r\n            if (string.contains(substring)) {\r\n                System.out.println(\"Подстрока найдена в строке \" + string);\r\n            }\r\n        }\r\n    }\r\n\r\n    public static void textFile(ArrayList<String> arrayList) throws FileNotFoundException {\r\n        Scanner in = new Scanner(new File(\"C:\\\\Users\\\\Mi\\\\Pism\\\\Laba 7\\\\text.txt\"));\r\n        arrayList.add(in.nextLine());\r\n        System.out.println(arrayList);\r\n    }\r\n\r\n    public static void stringLength(ArrayList<String> arrayList) {\r\n        for (String string : arrayList) {\r\n            System.out.println(\"Длина строки \" + string + \" равна \" + string.length());\r\n        }\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/com/company/Main.java b/src/com/company/Main.java
+--- a/src/com/company/Main.java	(revision b2481361a7d46c5c6fc48bb9d0910ea3801a341a)
++++ b/src/com/company/Main.java	(date 1607679969325)
+@@ -11,10 +11,11 @@
+ 
+     public static void main(String[] args) throws FileNotFoundException {
+         ArrayList<String> arrayList = new ArrayList<String>();
+-        arrayList.add("One");
+-        arrayList.add("Two");
+-        arrayList.add("Three");
+-        arrayList.add("One");
++        arrayList.add("hello");
++        arrayList.add("snowy");
++        arrayList.add("white");
++        arrayList.add("winter");
++        arrayList.add("cold");
+ 
+         Scanner scanner = new Scanner(System.in);
+         int choice = 0;
+@@ -83,7 +84,7 @@
+     }
+ 
+     public static void inXml(ArrayList<String> arrayList) {
+-        ForXml object = new ForXml(arrayList.get(0), arrayList.get(1), arrayList.get(2), arrayList.get(3), arrayList.get(4));
++        ConvertToXml object = new ConvertToXml(arrayList.get(0), arrayList.get(1), arrayList.get(2), arrayList.get(3), arrayList.get(4));
+         try {
+             FileOutputStream fileOutputStream = new FileOutputStream(new File("./arrayList.xml"));
+             XMLEncoder encoder = new XMLEncoder(fileOutputStream);
+Index: src/com/company/ConvertToXml.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.company;\r\n\r\npublic class ForXml {\r\n    private String string_1;\r\n    private String string_2;\r\n    private String string_3;\r\n    private String string_4;\r\n    private String string_5;\r\n\r\n    public ForXml(String string_1, String string_2, String string_3, String string_4, String string_5) {\r\n        this.string_1 = string_1;\r\n        this.string_2 = string_2;\r\n        this.string_3 = string_3;\r\n        this.string_4 = string_4;\r\n        this.string_5 = string_5;\r\n    }\r\n\r\n    public ForXml() {\r\n    }\r\n\r\n    public String getString_1() {\r\n        return string_1;\r\n    }\r\n\r\n    public void setString_1(String string_1) {\r\n        this.string_1 = string_1;\r\n    }\r\n\r\n    public String getString_2() {\r\n        return string_2;\r\n    }\r\n\r\n    public void setString_2(String string_2) {\r\n        this.string_2 = string_2;\r\n    }\r\n\r\n    public String getString_3() {\r\n        return string_3;\r\n    }\r\n\r\n    public void setString_3(String string_3) {\r\n        this.string_3 = string_3;\r\n    }\r\n\r\n    public String getString_4() {\r\n        return string_4;\r\n    }\r\n\r\n    public void setString_4(String string_4) {\r\n        this.string_4 = string_4;\r\n    }\r\n\r\n    public String getString_5() {\r\n        return string_5;\r\n    }\r\n\r\n    public void setString_5(String string_5) {\r\n        this.string_5 = string_5;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/com/company/ConvertToXml.java b/src/com/company/ConvertToXml.java
+--- a/src/com/company/ConvertToXml.java	(revision b2481361a7d46c5c6fc48bb9d0910ea3801a341a)
++++ b/src/com/company/ConvertToXml.java	(date 1607679809596)
+@@ -1,13 +1,13 @@
+ package com.company;
+ 
+-public class ForXml {
++public class ConvertToXml {
+     private String string_1;
+     private String string_2;
+     private String string_3;
+     private String string_4;
+     private String string_5;
+ 
+-    public ForXml(String string_1, String string_2, String string_3, String string_4, String string_5) {
++    public ConvertToXml(String string_1, String string_2, String string_3, String string_4, String string_5) {
+         this.string_1 = string_1;
+         this.string_2 = string_2;
+         this.string_3 = string_3;
+@@ -15,7 +15,7 @@
+         this.string_5 = string_5;
+     }
+ 
+-    public ForXml() {
++    public ConvertToXml() {
+     }
+ 
+     public String getString_1() {
+Index: arrayList.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<java version=\"1.8.0_221\" class=\"java.beans.XMLDecoder\">\r\n <object class=\"com.company.ConvertToXml\">\r\n  <void property=\"string_1\">\r\n   <string>hello</string>\r\n  </void>\r\n  <void property=\"string_2\">\r\n   <string>snowy</string>\r\n  </void>\r\n  <void property=\"string_3\">\r\n   <string>white</string>\r\n  </void>\r\n  <void property=\"string_4\">\r\n   <string>winter</string>\r\n  </void>\r\n  <void property=\"string_5\">\r\n   <string>snowy</string>\r\n  </void>\r\n </object>\r\n</java>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/arrayList.xml b/arrayList.xml
+--- a/arrayList.xml	(revision b2481361a7d46c5c6fc48bb9d0910ea3801a341a)
++++ b/arrayList.xml	(date 1669905876891)
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-<java version="1.8.0_221" class="java.beans.XMLDecoder">
++<java version="16.0.1" class="java.beans.XMLDecoder">
+  <object class="com.company.ConvertToXml">
+   <void property="string_1">
+    <string>hello</string>
+@@ -14,7 +14,7 @@
+    <string>winter</string>
+   </void>
+   <void property="string_5">
+-   <string>snowy</string>
++   <string>cold</string>
+   </void>
+  </object>
+ </java>
+Index: .gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/idea\r\n.idea\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.gitignore b/.gitignore
+--- a/.gitignore	(revision b2481361a7d46c5c6fc48bb9d0910ea3801a341a)
++++ b/.gitignore	(date 1670233303339)
+@@ -1,2 +1,4 @@
+ /idea
+ .idea
++.idea
++.idea
